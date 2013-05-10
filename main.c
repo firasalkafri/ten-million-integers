@@ -8,7 +8,7 @@
 #include <errno.h>
 #include <string.h>
 
-#define FIFO_NAME "ccccccccccccc"
+#define FIFO_NAME "myFiFo"
 
 void forkChildren (int);       //a simple function to handle multi children
 void sendData(int [],int);     //a simple fuction to send data through FIFO, pass an array and it's size
@@ -32,16 +32,24 @@ int fd;                        //Global file handler
 
 int main()
 {
-  
+
 long int i;
 initArray();
 initDublicatesCounter();
 forkChildren(5);
 if(me==0){
-printf("Parent starting%d\n",me);
-sendData(array,9999999);
+	printf("Parent starting\n");
+	sendData(array,9999999);
+}
+
+int pid;
+while (pid = waitpid(-1, NULL, 0)) {
+   if (errno == ECHILD) {
+      break;
+   }
 }
 }
+
 
 
 void forkChildren (int nChildren) {
@@ -54,7 +62,7 @@ void forkChildren (int nChildren) {
             return;
         }
         if (pid == 0 && i==1) {
-      me = 1;
+	    me = 1;
             printf("I am child: %d PID: %d\n",i, getpid());
 	    initDublicatesCounter();
 	    readData(1999999);
